@@ -8,6 +8,12 @@ import { Config } from '../configs'
 
 export enum QueueName {
     mail = 'mail',
+    cronJobCrawlListLeague = 'cronJobCrawlListLeague',
+    cronJobCrawlListEventByLeague = 'cronJobCrawlListEventByLeague',
+    cronJobCrawlDetailEvent = 'cronJobCrawlDetailEvent',
+    updateLeagueToDB = 'updateLeagueToDB',
+    updateEventToDB = 'updateEventToDB',
+    updateMarketToDB = 'updateMarketToDB',
 }
 
 @Service()
