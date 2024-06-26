@@ -9,9 +9,9 @@ export class League extends AppBaseEntity {
     @Column({ length: 255 })
     name: string
 
-    @Column()
-    sportId: number
+    @Column({ length: 255 })
+    sportId: string
 
-    @Column()
+    @Column({ default: true })
     enabled: boolean
 }

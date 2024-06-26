@@ -1,14 +1,14 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm'
 import { AppBaseEntity } from '../../../base/base.entity'
 
-@Entity({ name: 'Market' })
-@Unique(['name', 'eventId'])
-export class Market extends AppBaseEntity {
+@Entity({ name: 'Selection' })
+@Unique(['name', 'marketId'])
+export class Selection extends AppBaseEntity {
     @PrimaryGeneratedColumn('increment')
-    marketId: number
+    selectionId: number
 
-    @Column({ length: 255 })
-    eventId: string
+    @Column()
+    marketId: number
 
     @Column({ length: 255 })
     marketType: string
@@ -16,12 +16,12 @@ export class Market extends AppBaseEntity {
     @Column({ length: 255 })
     name: string
 
-    @Column()
-    startTime: Date
+    @Column({ length: 255 })
+    role: string
+
+    @Column({ type: 'float' })
+    winPrice: number
 
     @Column({ default: true })
     enabled: boolean
-
-    @Column({ default: false })
-    isTrending: boolean
 }
