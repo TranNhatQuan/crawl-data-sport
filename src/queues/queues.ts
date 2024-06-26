@@ -16,6 +16,10 @@ export enum QueueName {
     updateMarketToDB = 'updateMarketToDB',
 }
 
+enum CRAWL_TIME {
+    checkout = 5 * 1000, //5 s
+}
+
 @Service()
 export class QueueManager {
     private readonly queues: Record<string, Queue> = {}
@@ -69,4 +73,8 @@ export const setupQueues = () => {
     Object.values(QueueName).forEach((queueName) =>
         Container.get(QueueManager).createQueue(queueName)
     )
+}
+
+export const setupCronJob = async () => {
+    return
 }
