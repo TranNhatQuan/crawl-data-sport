@@ -11,9 +11,6 @@ export class Selection extends AppBaseEntity {
     marketId: number
 
     @Column({ length: 255 })
-    marketType: string
-
-    @Column({ length: 255 })
     name: string
 
     @Column({ length: 255 })
