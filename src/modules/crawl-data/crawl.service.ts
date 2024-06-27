@@ -6,9 +6,12 @@ import { Errors } from '../../utils/error'
 import { plainToInstance } from 'class-transformer'
 import { LeagueFromPriceKineticsDTO } from './dtos/league-from-price-kinetics.dto'
 import { filterDuplicates } from '../../utils'
-import { CrawlEventReqDTO } from './dtos/crawl-event.dto'
+import { CrawlEventDTO, CrawlEventReqDTO } from './dtos/crawl-event.dto'
 import { EventFromPriceKineticsDTO } from './dtos/event-from-price-kinetics.dto'
-import { CrawlDetailEventReqDTO } from './dtos/crawl-detail-event.dto'
+import {
+    CrawlDetailEventDTO,
+    CrawlDetailEventReqDTO,
+} from './dtos/crawl-detail-event.dto'
 import { MarketFromPriceKineticsDTO } from './dtos/market-from-price-kinetics.dto'
 
 enum typeCrawl {
@@ -54,7 +57,6 @@ export class CrawlService {
 
     async getListEventByLeague(data: CrawlEventReqDTO) {
         const { sportId, league } = data
-        console.log(league)
         const days = 10
         const url =
             this.config.sourceCrawl +
@@ -101,11 +103,74 @@ export class CrawlService {
         if (!response || !response.data || !response.data.Success) {
             throw Errors.crawlError
         }
-        const events = response.data.Events
-        if (Array.isArray(events)) {
+        const markets = response.data.Event.Markets
+        if (Array.isArray(markets)) {
             const leagues = plainToInstance(
                 MarketFromPriceKineticsDTO,
-                events,
+                markets,
+                {
+                    excludeExtraneousValues: true,
+                }
+            )
+            return leagues
+        } else {
+            throw Errors.crawlError
+        }
+    }
+
+    async crawlListEventByLeague(data: CrawlEventDTO) {
+        const { sportId, league } = data
+        const days = 10
+        const url =
+            this.config.sourceCrawl +
+            '/' +
+            typeCrawl.summary +
+            '/' +
+            sportId +
+            '?api_key=' +
+            this.config.apiKeySourceCrawl +
+            '&days=' +
+            days +
+            '&league=' +
+            league
+        const response = await axios.get(url)
+        //console.log(response)
+        if (!response || !response.data || !response.data.Success) {
+            throw Errors.crawlError
+        }
+        const events = response.data.Events
+        if (Array.isArray(events)) {
+            const leagues = plainToInstance(EventFromPriceKineticsDTO, events, {
+                excludeExtraneousValues: true,
+            })
+            return leagues
+        } else {
+            throw Errors.crawlError
+        }
+    }
+
+    async crawlDetailEventByLeague(data: CrawlDetailEventDTO) {
+        const { eventId } = data
+        const days = 10
+        const url =
+            this.config.sourceCrawl +
+            '/' +
+            typeCrawl.detail +
+            '/' +
+            eventId +
+            '?api_key=' +
+            this.config.apiKeySourceCrawl +
+            '&days=' +
+            days
+        const response = await axios.get(url)
+        if (!response || !response.data || !response.data.Success) {
+            throw Errors.crawlError
+        }
+        const markets = response.data.Event.Markets
+        if (Array.isArray(markets)) {
+            const leagues = plainToInstance(
+                MarketFromPriceKineticsDTO,
+                markets,
                 {
                     excludeExtraneousValues: true,
                 }

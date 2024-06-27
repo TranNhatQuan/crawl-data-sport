@@ -14,7 +14,7 @@ export const SportRepos = AppDataSource.getRepository(Sport).extend({
                 .createQueryBuilder()
                 .select()
                 .from(Sport, 'c')
-                .where('c.enable = :enable', { enable: true })
+                .where('c.enabled = :enabled', { enabled: true })
                 .getRawMany()
             return plainToInstance(SportDTO, plan, {
                 excludeExtraneousValues: true,
