@@ -49,6 +49,14 @@ export class Config {
     @Type(() => AwsConfig)
     awsConfig: AwsConfig
 
+    @IsString()
+    @IsNotEmpty()
+    sourceCrawl: string
+
+    @IsString()
+    @IsNotEmpty()
+    apiKeySourceCrawl: string
+
     constructor() {
         const env = process.env
         this.nodeEnv = env.NODE_ENV
@@ -60,6 +68,8 @@ export class Config {
         this.jwt = this.decodeStringObj(env.JWT)
         this.basicAuthPassword = env.BASIC_AUTH_PASSWORD
         this.awsConfig = this.decodeStringObj(env.AWS_CREDENTIALS)
+        this.sourceCrawl = this.decodeStringObj(env.SOURCE_CRAWL)
+        this.apiKeySourceCrawl = this.decodeStringObj(env.API_KEY_SOURCE_CRAWL)
     }
 
     isProductionNodeEnv() {
