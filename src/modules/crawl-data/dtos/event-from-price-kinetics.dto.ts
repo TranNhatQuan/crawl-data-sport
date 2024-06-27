@@ -1,5 +1,5 @@
 import { Expose, plainToInstance, Transform } from 'class-transformer'
-import { MarketFromPriceKineticsDTO } from '../../markets/dtos/market-from-price-kinetics.dto'
+import { SelectionFromPriceKineticsDTO } from './selection-from-price-kinetics.dto'
 
 export class EventFromPriceKineticsDTO {
     @Expose()
@@ -40,14 +40,14 @@ export class EventFromPriceKineticsDTO {
 
     @Expose()
     @Transform((value) => {
-        const data = value.obj?.Markets || []
+        const data = value.obj?.Selections || []
         if (Array.isArray(data)) {
-            return plainToInstance(MarketFromPriceKineticsDTO, data, {
+            return plainToInstance(SelectionFromPriceKineticsDTO, data, {
                 excludeExtraneousValues: true,
             })
         } else {
             return []
         }
     })
-    markets: MarketFromPriceKineticsDTO[]
+    selections: SelectionFromPriceKineticsDTO[]
 }

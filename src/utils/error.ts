@@ -36,6 +36,7 @@ export const Errors = {
         'Internal server error.',
         500
     ),
+    crawlError: new ErrorResp('error.CrawlError', 'Crawl error'),
     InvalidFileType: new ErrorResp(
         'error.invalidFileType',
         'Invalid file type.'

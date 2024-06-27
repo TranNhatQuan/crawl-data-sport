@@ -1,6 +1,6 @@
 import { Expose, Transform } from 'class-transformer'
 
-export class LaegueFromPriceKineticsDTO {
+export class LeagueFromPriceKineticsDTO {
     @Expose()
     @Transform((value) => {
         return value.obj?.League
@@ -9,7 +9,7 @@ export class LaegueFromPriceKineticsDTO {
 
     @Expose()
     @Transform((value) => {
-        return new Date(value.obj?.Sport)
+        return value.obj?.Sport
     })
     sportId: string
 }
