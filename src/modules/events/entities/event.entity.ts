@@ -1,8 +1,7 @@
-import { Column, Entity, PrimaryColumn, Unique } from 'typeorm'
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 import { AppBaseEntity } from '../../../base/base.entity'
 
 @Entity({ name: 'Event' })
-@Unique(['leagueId', 'title', 'startTime'])
 export class Event extends AppBaseEntity {
     @PrimaryColumn()
     eventId: string
