@@ -6,10 +6,10 @@ import Container from 'typedi'
 import { LeagueService } from '../../modules/leagues/leagues.service'
 
 export const updateLeagueToDBWorker = new Worker(
-    QueueName.cronJobCrawlListLeague,
+    QueueName.updateLeagueToDB,
     async (job: Job) => {
         const { sportId, leagues } = job.data
-        console.log(job.data)
+
         return Container.get(LeagueService).updateDataFormPriceKineticToDB({
             leagues,
             sportId,
