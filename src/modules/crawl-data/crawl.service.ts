@@ -5,7 +5,6 @@ import { Config } from '../../configs'
 import { Errors } from '../../utils/error'
 import { plainToInstance } from 'class-transformer'
 import { LeagueFromPriceKineticsDTO } from './dtos/league-from-price-kinetics.dto'
-import { filterDuplicates } from '../../utils'
 import { CrawlEventDTO, CrawlEventReqDTO } from './dtos/crawl-event.dto'
 import { EventFromPriceKineticsDTO } from './dtos/event-from-price-kinetics.dto'
 import {
@@ -49,7 +48,7 @@ export class CrawlService {
                     excludeExtraneousValues: true,
                 }
             )
-            return filterDuplicates(leagues)
+            return this.filterDuplicateLeague(leagues)
         } else {
             throw Errors.crawlError
         }
@@ -207,9 +206,19 @@ export class CrawlService {
                     excludeExtraneousValues: true,
                 }
             )
-            return filterDuplicates(leagues)
+            return leagues
         } else {
             throw Errors.crawlError
         }
+    }
+
+    filterDuplicateLeague = (array: LeagueFromPriceKineticsDTO[]) => {
+        const set = new Set()
+        const result = array.filter((item) => {
+            const duplicate = set.has(item.name)
+            set.add(item.name)
+            return !duplicate
+        })
+        return result
     }
 }

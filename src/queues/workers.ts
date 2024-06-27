@@ -1,6 +1,7 @@
 import { Worker } from 'bullmq'
 import Container, { Service } from 'typedi'
-import { mailWorker } from './workers/mail.worker'
+import { crawlListLeagueWorker } from './workers/crawl-list-league.worker'
+import { updateLeagueToDBWorker } from './workers/update-leagues-to-db.worker'
 
 @Service()
 export class WorkerManager {
@@ -19,6 +20,6 @@ export class WorkerManager {
 }
 
 export const setupWorkers = () => {
-    const workers = [mailWorker]
+    const workers = [crawlListLeagueWorker, updateLeagueToDBWorker]
     workers.forEach((worker) => Container.get(WorkerManager).addWorker(worker))
 }

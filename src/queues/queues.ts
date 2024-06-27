@@ -16,8 +16,8 @@ export enum QueueName {
     updateMarketToDB = 'updateMarketToDB',
 }
 
-enum CRAWL_TIME {
-    checkout = 5 * 1000, //5 s
+enum CRON_TIME {
+    crawlListLeague = 5 * 1000, //5 s
 }
 
 @Service()
@@ -76,5 +76,25 @@ export const setupQueues = () => {
 }
 
 export const setupCronJob = async () => {
+    await setupCronJobCrawlListLeague()
     return
+}
+
+export const setupCronJobCrawlListLeague = async () => {
+    const queue = Container.get(QueueManager).getQueue(
+        QueueName.cronJobCrawlListLeague
+    )
+    const oldRepeatableJobs = await queue.getRepeatableJobs()
+    for (const job of oldRepeatableJobs) {
+        await queue.removeRepeatableByKey(job.key)
+    }
+    queue.add(
+        QueueName.cronJobCrawlListLeague,
+        {},
+        {
+            repeat: {
+                every: CRON_TIME.crawlListLeague,
+            },
+        }
+    )
 }

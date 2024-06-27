@@ -15,7 +15,7 @@ import 'reflect-metadata'
 import Container from 'typedi'
 import { Config, validateEnv } from './configs'
 import { AppDataSource } from './database/connection'
-import { QueueManager, setupQueues } from './queues/queues'
+import { QueueManager, setupCronJob, setupQueues } from './queues/queues'
 import { setupWorkers } from './queues/workers'
 import { handleError } from './utils/error'
 import { logger } from './utils/logger'
@@ -110,6 +110,7 @@ export class App {
         await Promise.all([AppDataSource.initialize()])
         setupQueues()
         setupWorkers()
+        setupCronJob()
 
         this.app.use(
             '/admin/queues',

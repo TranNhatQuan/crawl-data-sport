@@ -42,6 +42,7 @@ export const Errors = {
         'Invalid file type.'
     ),
     UserNotFound: new ErrorResp('error.userNotFound', 'User not found'),
+    SportNotFound: new ErrorResp('error.SportNotFound', 'Sport not found'),
 }
 
 export const handleError = (err: Error, res: Response) => {
