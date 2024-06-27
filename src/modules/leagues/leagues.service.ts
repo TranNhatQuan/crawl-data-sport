@@ -73,7 +73,7 @@ export class LeagueService {
             const promises = chunk.map((leagueName: string) => {
                 return LeagueRepos.addLeague({
                     name: leagueName,
-                    sportId: sportId,
+                    sportId,
                 })
             })
             await Promise.all(promises)
