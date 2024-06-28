@@ -3,16 +3,16 @@ import { Redis } from 'ioredis'
 import { config } from '../../configs'
 import { QueueName } from '../queues'
 import Container from 'typedi'
-import { LeagueService } from '../../modules/leagues/leagues.service'
-import { countJobLeague } from './update-leagues-to-db.worker'
+import { EventService } from '../../modules/events/event.service'
+import { countJobEvent } from './update-events-to-db.worker'
 
-export const crawlListLeagueWorker = new Worker(
-    QueueName.cronJobCrawlListLeague,
+export const crawlListEventWorker = new Worker(
+    QueueName.cronJobCrawlListEventByLeague,
     async () => {
-        if (countJobLeague <= 0) {
-            return Container.get(LeagueService).scanSportsAndCrawlLeague()
+        if (countJobEvent <= 0) {
+            return Container.get(EventService).scanLeaguesAndCrawlEvent()
         }
-        return countJobLeague
+        return countJobEvent
     },
     {
         connection: new Redis({

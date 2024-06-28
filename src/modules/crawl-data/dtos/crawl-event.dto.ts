@@ -1,10 +1,11 @@
 import { Expose } from 'class-transformer'
-import { IsString } from 'class-validator'
+import { IsNumber, IsString } from 'class-validator'
 import { DataReqDTO } from '../../../base/base.dto'
 
 export interface CrawlEventDTO {
     sportId: string
-    league: string
+    leagueName: string
+    leagueId: number
 }
 
 export class CrawlEventReqDTO extends DataReqDTO implements CrawlEventDTO {
@@ -14,5 +15,9 @@ export class CrawlEventReqDTO extends DataReqDTO implements CrawlEventDTO {
 
     @Expose()
     @IsString()
-    league: string
+    leagueName: string
+
+    @Expose()
+    @IsNumber()
+    leagueId: number
 }

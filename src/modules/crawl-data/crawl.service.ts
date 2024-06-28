@@ -55,7 +55,7 @@ export class CrawlService {
     }
 
     async getListEventByLeague(data: CrawlEventReqDTO) {
-        const { sportId, league } = data
+        const { sportId, leagueName } = data
         const days = 10
         const url =
             this.config.sourceCrawl +
@@ -68,7 +68,7 @@ export class CrawlService {
             '&days=' +
             days +
             '&league=' +
-            league
+            leagueName
         const response = await axios.get(url)
         //console.log(response)
         if (!response || !response.data || !response.data.Success) {
@@ -118,7 +118,7 @@ export class CrawlService {
     }
 
     async crawlListEventByLeague(data: CrawlEventDTO) {
-        const { sportId, league } = data
+        const { sportId, leagueName } = data
         const days = 10
         const url =
             this.config.sourceCrawl +
@@ -131,7 +131,7 @@ export class CrawlService {
             '&days=' +
             days +
             '&league=' +
-            league
+            leagueName
         const response = await axios.get(url)
         //console.log(response)
         if (!response || !response.data || !response.data.Success) {

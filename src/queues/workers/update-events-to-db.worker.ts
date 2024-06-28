@@ -3,20 +3,20 @@ import { Redis } from 'ioredis'
 import { config } from '../../configs'
 import { QueueManager, QueueName } from '../queues'
 import Container from 'typedi'
-import { LeagueService } from '../../modules/leagues/leagues.service'
+import { EventService } from '../../modules/events/event.service'
 
-export let countJobLeague = 0
+export let countJobEvent = 0
 
-export const updateLeagueToDBWorker = new Worker(
+export const updateEventToDBWorker = new Worker(
     QueueName.updateLeagueToDB,
     async (job: Job) => {
-        countJobLeague = await Container.get(QueueManager)
+        countJobEvent = await Container.get(QueueManager)
             .getQueue(QueueName.updateLeagueToDB)
             .getWaitingCount()
-        const { sportId, leagues } = job.data
-        await Container.get(LeagueService).updateDataFormPriceKineticToDB({
-            leagues,
-            sportId,
+        const { leagueId, events } = job.data
+        await Container.get(EventService).updateDataFormPriceKineticToDB({
+            events,
+            leagueId,
         })
         return true
     },

@@ -2,5 +2,5 @@ import { EventFromPriceKineticsDTO } from '../../crawl-data/dtos/event-from-pric
 
 export interface EventDataFromCrawlDTO {
     events: EventFromPriceKineticsDTO[]
-    leagueId: string
+    leagueId: number
 }

@@ -9,6 +9,7 @@ import { EventDTO } from '../dtos/event.dto'
 import { Event } from '../entities/event.entity'
 import { EventFromPriceKineticsDTO } from '../../crawl-data/dtos/event-from-price-kinetics.dto'
 import { EventUpdateDTO } from '../dtos/event-update.dto'
+import { EventGetListByLeague } from '../dtos/event-get-list-by-league.dto'
 
 export const EventRepos = AppDataSource.getRepository(Event).extend({
     async getListEvents(db: DBSource = 'slave') {
@@ -24,6 +25,28 @@ export const EventRepos = AppDataSource.getRepository(Event).extend({
             })
         })
     },
+
+    async getListEventsByLeague(
+        data: EventGetListByLeague,
+        db: DBSource = 'slave'
+    ) {
+        const { leagueId } = data
+        return createQuery(db, async (manager) => {
+            const plan = await manager
+                .createQueryBuilder()
+                .select()
+                .from(Event, 'c')
+                .where('c.leagueId = :leagueId and c.enabled = :enabled', {
+                    leagueId,
+                    enabled: true,
+                })
+                .getRawMany()
+            return plainToInstance(EventDTO, plan, {
+                excludeExtraneousValues: true,
+            })
+        })
+    },
+
     async addEvent(data: EventFromPriceKineticsDTO) {
         const { eventId, finishedAt, startTime, startedAt, title, leagueId } =
             data

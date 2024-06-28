@@ -1,3 +1,3 @@
 export interface EventGetListByLeague {
-    leagueId: string
+    leagueId: number
 }

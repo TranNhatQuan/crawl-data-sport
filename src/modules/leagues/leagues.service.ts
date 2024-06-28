@@ -10,6 +10,7 @@ import { LeagueDataFromCrawlDTO } from './dtos/league-data-from-crawl.dto'
 import { Errors } from '../../utils/error'
 import { LeagueDTO } from './dtos/league.dto'
 import { LeagueFromPriceKineticsDTO } from '../crawl-data/dtos/league-from-price-kinetics.dto'
+import { LeagueGetDTO } from './dtos/league-get.dto'
 
 @Service()
 export class LeagueService {
@@ -29,6 +30,16 @@ export class LeagueService {
 
     async getListLeagueBySport(data: LeagueGetListBySportDTO) {
         const leaguesDB = await LeagueRepos.getListLeaguesBySportId(data)
+        return leaguesDB
+    }
+
+    async getListLeague() {
+        const leaguesDB = await LeagueRepos.getListLeagues()
+        return leaguesDB
+    }
+
+    async getLeague(data: LeagueGetDTO) {
+        const leaguesDB = await LeagueRepos.getLeague(data)
         return leaguesDB
     }
 

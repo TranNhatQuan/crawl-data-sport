@@ -43,6 +43,8 @@ export const Errors = {
     ),
     UserNotFound: new ErrorResp('error.userNotFound', 'User not found'),
     SportNotFound: new ErrorResp('error.SportNotFound', 'Sport not found'),
+    LeagueNotFound: new ErrorResp('error.LeagueNotFound', 'League not found'),
+    EventNotFound: new ErrorResp('error.EventNotFound', 'Event not found'),
 }
 
 export const handleError = (err: Error, res: Response) => {

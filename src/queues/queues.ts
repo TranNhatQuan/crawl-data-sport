@@ -18,6 +18,8 @@ export enum QueueName {
 
 enum CRON_TIME {
     crawlListLeague = 5 * 1000, //5 s
+    crawlListEvent = 5 * 1000, //5 s
+    crawlDetailEvent = 5 * 1000, //5 s
 }
 
 @Service()
@@ -94,6 +96,25 @@ export const setupCronJobCrawlListLeague = async () => {
         {
             repeat: {
                 every: CRON_TIME.crawlListLeague,
+            },
+        }
+    )
+}
+
+export const setupCronJobCrawlLisEvent = async () => {
+    const queue = Container.get(QueueManager).getQueue(
+        QueueName.cronJobCrawlListEventByLeague
+    )
+    const oldRepeatableJobs = await queue.getRepeatableJobs()
+    for (const job of oldRepeatableJobs) {
+        await queue.removeRepeatableByKey(job.key)
+    }
+    queue.add(
+        QueueName.cronJobCrawlListLeague,
+        {},
+        {
+            repeat: {
+                every: CRON_TIME.crawlListEvent,
             },
         }
     )
