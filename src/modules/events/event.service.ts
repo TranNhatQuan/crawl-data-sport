@@ -60,6 +60,7 @@ export class EventService {
                             return
                         })
                     }
+                    eventsDBSet.delete(event.eventId)
                 } else {
                     const {
                         eventId,
@@ -87,6 +88,26 @@ export class EventService {
                         return
                     })
                 }
+            })
+            await Promise.all(promises)
+        }
+        const remainingEventDB = Array.from(eventsDBSet)
+        if (remainingEventDB.length == 0) return true
+        const newChunks: string[][] = []
+        for (let i = 0; i < remainingEventDB.length; i += chunkSize) {
+            newChunks.push(remainingEventDB.slice(i, i + chunkSize))
+        }
+        for (const chunk of newChunks) {
+            const promises = chunk.map((eventId: string) => {
+                return EventRepos.updateEvent({
+                    eventId,
+                    enabled: false,
+                }).catch((error) => {
+                    console.log(
+                        `Error update league: ${eventId}, Error: ${error}`
+                    )
+                    return null
+                })
             })
             await Promise.all(promises)
         }
