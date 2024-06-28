@@ -9,6 +9,7 @@ import { LeagueGetListBySportDTO } from './dtos/league-get-list-by-sport.dto'
 import { LeagueDataFromCrawlDTO } from './dtos/league-data-from-crawl.dto'
 import { Errors } from '../../utils/error'
 import { LeagueDTO } from './dtos/league.dto'
+import { LeagueFromPriceKineticsDTO } from '../crawl-data/dtos/league-from-price-kinetics.dto'
 
 @Service()
 export class LeagueService {
@@ -33,6 +34,7 @@ export class LeagueService {
 
     async updateDataFormPriceKineticToDB(data: LeagueDataFromCrawlDTO) {
         const { leagues, sportId } = data
+        if (leagues.length == 0) return sportId + ' = []'
         const sport = await this.sportService.getSport({ sportId })
         if (!sport) throw Errors.SportNotFound
         const leaguesDB = await this.getListLeagueBySport({ sportId })
@@ -98,17 +100,18 @@ export class LeagueService {
 
     async addJobUpdateLeague(data: CrawlLeagueDTO) {
         const { sportId } = data
+        let leagues: LeagueFromPriceKineticsDTO[] = []
         try {
-            const leagues = await this.crawlListLeague(data)
-            return this.queueManager
-                .getQueue(QueueName.updateLeagueToDB)
-                .add(QueueName.updateLeagueToDB, {
-                    sportId,
-                    leagues,
-                })
+            leagues = await this.crawlListLeague(data)
         } catch (error) {
             console.log(error + ' of' + sportId)
         }
+        return this.queueManager
+            .getQueue(QueueName.updateLeagueToDB)
+            .add(QueueName.updateLeagueToDB, {
+                sportId,
+                leagues,
+            })
     }
 
     async scanSportsAndCrawlLeague() {

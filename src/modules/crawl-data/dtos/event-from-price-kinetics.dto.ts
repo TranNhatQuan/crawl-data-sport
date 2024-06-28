@@ -50,4 +50,6 @@ export class EventFromPriceKineticsDTO {
         }
     })
     selections: SelectionFromPriceKineticsDTO[]
+
+    leagueId: number
 }
