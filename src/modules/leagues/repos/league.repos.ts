@@ -7,10 +7,9 @@ import {
 } from '../../../database/connection'
 import { LeagueDTO } from '../dtos/league.dto'
 import { League } from '../entities/league.entity'
-import { EntityManager } from 'typeorm'
 import { LeagueFromPriceKineticsDTO } from '../../crawl-data/dtos/league-from-price-kinetics.dto'
-import { LaegueUpdateDTO } from '../dtos/league-update.dto'
-import { LaegueGetListBySportDTO } from '../dtos/league-get-list-by-sport.dto'
+import { LeagueUpdateDTO } from '../dtos/league-update.dto'
+import { LeagueGetListBySportDTO } from '../dtos/league-get-list-by-sport.dto'
 
 export const LeagueRepos = AppDataSource.getRepository(League).extend({
     async getListLeagues(db: DBSource = 'slave') {
@@ -28,7 +27,7 @@ export const LeagueRepos = AppDataSource.getRepository(League).extend({
     },
 
     async getListLeaguesBySportId(
-        data: LaegueGetListBySportDTO,
+        data: LeagueGetListBySportDTO,
         db: DBSource = 'slave'
     ) {
         const { sportId } = data
@@ -52,7 +51,7 @@ export const LeagueRepos = AppDataSource.getRepository(League).extend({
         })
     },
 
-    async updateLeague(data: LaegueUpdateDTO) {
+    async updateLeague(data: LeagueUpdateDTO) {
         const { leagueId, enabled } = data
         startTransaction(async (manager) => {
             await manager.update(League, { leagueId }, { enabled })

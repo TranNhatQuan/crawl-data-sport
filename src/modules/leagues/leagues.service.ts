@@ -5,7 +5,7 @@ import { SportService } from '../sports/sport.service'
 import { QueueManager, QueueName } from '../../queues/queues'
 import { SportDTO } from '../sports/dtos/sport.dto'
 import { LeagueRepos } from './repos/league.repos'
-import { LaegueGetListBySportDTO } from './dtos/league-get-list-by-sport.dto'
+import { LeagueGetListBySportDTO } from './dtos/league-get-list-by-sport.dto'
 import { LeagueDataFromCrawlDTO } from './dtos/league-data-from-crawl.dto'
 import { Errors } from '../../utils/error'
 import { LeagueDTO } from './dtos/league.dto'
@@ -26,7 +26,7 @@ export class LeagueService {
         return leagues
     }
 
-    async getListLeagueBySport(data: LaegueGetListBySportDTO) {
+    async getListLeagueBySport(data: LeagueGetListBySportDTO) {
         const leaguesDB = await LeagueRepos.getListLeaguesBySportId(data)
         return leaguesDB
     }

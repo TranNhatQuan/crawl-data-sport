@@ -1,4 +1,4 @@
-export interface LaegueUpdateDTO {
+export interface LeagueUpdateDTO {
     leagueId: number
     enabled: boolean
 }
