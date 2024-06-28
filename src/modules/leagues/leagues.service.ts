@@ -49,6 +49,11 @@ export class LeagueService {
                         return LeagueRepos.updateLeague({
                             leagueId: league.leagueId,
                             enabled: true,
+                        }).catch((error) => {
+                            console.log(
+                                `Error update league: ${league.name}, Error: ${error}`
+                            )
+                            return
                         })
                     }
                     leaguesSet.delete(league.name)
@@ -57,6 +62,11 @@ export class LeagueService {
                         return LeagueRepos.updateLeague({
                             leagueId: league.leagueId,
                             enabled: false,
+                        }).catch((error) => {
+                            console.log(
+                                `Error update league: ${league.name}, Error: ${error}`
+                            )
+                            return
                         })
                     }
                 }
@@ -74,6 +84,11 @@ export class LeagueService {
                 return LeagueRepos.addLeague({
                     name: leagueName,
                     sportId,
+                }).catch((error) => {
+                    console.log(
+                        `Error adding league: ${leagueName}, Error: ${error}`
+                    )
+                    return null
                 })
             })
             await Promise.all(promises)
@@ -83,13 +98,17 @@ export class LeagueService {
 
     async addJobUpdateLeague(data: CrawlLeagueDTO) {
         const { sportId } = data
-        const leagues = await this.crawlListLeague(data)
-        return this.queueManager
-            .getQueue(QueueName.updateLeagueToDB)
-            .add(QueueName.updateLeagueToDB, {
-                sportId,
-                leagues,
-            })
+        try {
+            const leagues = await this.crawlListLeague(data)
+            return this.queueManager
+                .getQueue(QueueName.updateLeagueToDB)
+                .add(QueueName.updateLeagueToDB, {
+                    sportId,
+                    leagues,
+                })
+        } catch (error) {
+            console.log(error + ' of' + sportId)
+        }
     }
 
     async scanSportsAndCrawlLeague() {
@@ -99,12 +118,14 @@ export class LeagueService {
         for (let i = 0; i < list.length; i += chunkSize) {
             chunks.push(list.slice(i, i + chunkSize))
         }
+
         for (const chunk of chunks) {
             const promises = chunk.map((sport: SportDTO) => {
                 return this.addJobUpdateLeague({ sportId: sport.sportId })
             })
             await Promise.all(promises)
         }
+
         return true
     }
 }
