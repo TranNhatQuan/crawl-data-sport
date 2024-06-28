@@ -8,17 +8,18 @@ import { EventService } from '../../modules/events/event.service'
 export let countJobEvent = 0
 
 export const updateEventToDBWorker = new Worker(
-    QueueName.updateLeagueToDB,
+    QueueName.updateEventToDB,
     async (job: Job) => {
         countJobEvent = await Container.get(QueueManager)
-            .getQueue(QueueName.updateLeagueToDB)
+            .getQueue(QueueName.updateEventToDB)
             .getWaitingCount()
         const { leagueId, events } = job.data
-        await Container.get(EventService).updateDataFormPriceKineticToDB({
-            events,
-            leagueId,
-        })
-        return true
+        return await Container.get(EventService).updateDataFormPriceKineticToDB(
+            {
+                events,
+                leagueId,
+            }
+        )
     },
     {
         connection: new Redis({

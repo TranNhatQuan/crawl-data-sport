@@ -79,6 +79,7 @@ export const setupQueues = () => {
 
 export const setupCronJob = async () => {
     await setupCronJobCrawlListLeague()
+    await setupCronJobCrawlListEvent()
     return
 }
 
@@ -101,7 +102,7 @@ export const setupCronJobCrawlListLeague = async () => {
     )
 }
 
-export const setupCronJobCrawlLisEvent = async () => {
+export const setupCronJobCrawlListEvent = async () => {
     const queue = Container.get(QueueManager).getQueue(
         QueueName.cronJobCrawlListEventByLeague
     )
@@ -110,7 +111,7 @@ export const setupCronJobCrawlLisEvent = async () => {
         await queue.removeRepeatableByKey(job.key)
     }
     queue.add(
-        QueueName.cronJobCrawlListLeague,
+        QueueName.cronJobCrawlListEventByLeague,
         {},
         {
             repeat: {

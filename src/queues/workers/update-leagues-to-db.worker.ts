@@ -14,11 +14,10 @@ export const updateLeagueToDBWorker = new Worker(
             .getQueue(QueueName.updateLeagueToDB)
             .getWaitingCount()
         const { sportId, leagues } = job.data
-        await Container.get(LeagueService).updateDataFormPriceKineticToDB({
+        return Container.get(LeagueService).updateDataFormPriceKineticToDB({
             leagues,
             sportId,
         })
-        return true
     },
     {
         connection: new Redis({

@@ -39,82 +39,114 @@ export class EventService {
         const league = await this.leagueService.getLeague({ leagueId })
         if (!league) throw Errors.LeagueNotFound
         const eventsDB = await this.getListEventByLeague({ leagueId })
-        const eventsDBSet = new Set(eventsDB.map((event) => event.eventId))
         const chunkSize = 20
-        const chunks = []
-        for (let i = 0; i < events.length; i += chunkSize) {
-            chunks.push(events.slice(i, i + chunkSize))
-        }
-        for (const chunk of chunks) {
-            const promises = chunk.map((event: EventFromPriceKineticsDTO) => {
-                if (eventsDBSet.has(event.eventId)) {
-                    if (event.startedAt) {
-                        const { eventId, startedAt } = event
-                        return EventRepos.updateEvent({
-                            eventId,
-                            startedAt,
-                        }).catch((error) => {
-                            console.log(
-                                `Error update event: ${event.eventId}, Error: ${error}`
-                            )
-                            return
-                        })
+        if (eventsDB.length == 0) {
+            const chunks = []
+            for (let i = 0; i < events.length; i += chunkSize) {
+                chunks.push(events.slice(i, i + chunkSize))
+            }
+            for (const chunk of chunks) {
+                const promises = chunk.map(
+                    (event: EventFromPriceKineticsDTO) => {
+                        if (event.bettingStatus == 'BettingOpen') {
+                            const {
+                                eventId,
+                                finishedAt,
+                                marketTrending,
+                                selections,
+                                startTime,
+                                startedAt,
+                                title,
+                            } = event
+                            return EventRepos.addEvent({
+                                eventId,
+                                finishedAt,
+                                leagueId,
+                                marketTrending,
+                                selections,
+                                startTime,
+                                startedAt,
+                                title,
+                            }).catch((error) => {
+                                console.log(
+                                    `Error update event: ${event.eventId}, Error: ${error}`
+                                )
+                                return
+                            })
+                        }
                     }
-                    eventsDBSet.delete(event.eventId)
-                } else {
-                    const {
+                )
+                await Promise.all(promises)
+            }
+            return true
+        } else {
+            const eventsDBSet = new Set(eventsDB.map((event) => event.eventId))
+            const chunks = []
+            for (let i = 0; i < events.length; i += chunkSize) {
+                chunks.push(events.slice(i, i + chunkSize))
+            }
+            for (const chunk of chunks) {
+                const promises = chunk.map(
+                    (event: EventFromPriceKineticsDTO) => {
+                        if (eventsDBSet.has(event.eventId)) {
+                            eventsDBSet.delete(event.eventId)
+                        } else {
+                            if (event.bettingStatus == 'BettingOpen') {
+                                const {
+                                    eventId,
+                                    finishedAt,
+                                    marketTrending,
+                                    selections,
+                                    startTime,
+                                    startedAt,
+                                    title,
+                                } = event
+                                return EventRepos.addEvent({
+                                    eventId,
+                                    finishedAt,
+                                    leagueId,
+                                    marketTrending,
+                                    selections,
+                                    startTime,
+                                    startedAt,
+                                    title,
+                                }).catch((error) => {
+                                    console.log(
+                                        `Error update event: ${event.eventId}, Error: ${error}`
+                                    )
+                                    return
+                                })
+                            }
+                        }
+                    }
+                )
+                await Promise.all(promises)
+            }
+            const remainingEventDB = Array.from(eventsDBSet)
+            if (remainingEventDB.length == 0) return true
+            const newChunks: string[][] = []
+            for (let i = 0; i < remainingEventDB.length; i += chunkSize) {
+                newChunks.push(remainingEventDB.slice(i, i + chunkSize))
+            }
+            for (const chunk of newChunks) {
+                const promises = chunk.map((eventId: string) => {
+                    return EventRepos.updateEvent({
                         eventId,
-                        finishedAt,
-                        leagueId,
-                        marketTrending,
-                        selections,
-                        startTime,
-                        startedAt,
-                        title,
-                    } = event
-                    return EventRepos.addEvent({
-                        eventId,
-                        finishedAt,
-                        leagueId,
-                        marketTrending,
-                        selections,
-                        startTime,
-                        startedAt,
-                        title,
+                        enabled: false,
                     }).catch((error) => {
                         console.log(
-                            `Error update event: ${event.eventId}, Error: ${error}`
+                            `Error update league: ${eventId}, Error: ${error}`
                         )
-                        return
+                        return null
                     })
-                }
-            })
-            await Promise.all(promises)
-        }
-        const remainingEventDB = Array.from(eventsDBSet)
-        if (remainingEventDB.length == 0) return true
-        const newChunks: string[][] = []
-        for (let i = 0; i < remainingEventDB.length; i += chunkSize) {
-            newChunks.push(remainingEventDB.slice(i, i + chunkSize))
-        }
-        for (const chunk of newChunks) {
-            const promises = chunk.map((eventId: string) => {
-                return EventRepos.updateEvent({
-                    eventId,
-                    enabled: false,
-                }).catch((error) => {
-                    console.log(
-                        `Error update league: ${eventId}, Error: ${error}`
-                    )
-                    return null
                 })
-            })
-            await Promise.all(promises)
+                await Promise.all(promises)
+            }
+            return true
         }
-        return true
     }
 
-    async addJobUpdateLeague(data: CrawlEventDTO) {
+    async addJobUpdateEvent(data: CrawlEventDTO) {
         const { sportId, leagueId, leagueName } = data
         let events: EventFromPriceKineticsDTO[] = []
         try {
@@ -141,10 +173,9 @@ export class EventService {
         for (let i = 0; i < list.length; i += chunkSize) {
             chunks.push(list.slice(i, i + chunkSize))
         }
-
         for (const chunk of chunks) {
             const promises = chunk.map((league: LeagueDTO) => {
-                return this.addJobUpdateLeague({
+                return this.addJobUpdateEvent({
                     leagueName: league.name,
                     leagueId: league.leagueId,
                     sportId: league.sportId,
@@ -152,7 +183,6 @@ export class EventService {
             })
             await Promise.all(promises)
         }
-
         return true
     }
 }

@@ -34,6 +34,12 @@ export class EventFromPriceKineticsDTO {
 
     @Expose()
     @Transform((value) => {
+        return value.obj?.BettingStatus
+    })
+    bettingStatus?: string
+
+    @Expose()
+    @Transform((value) => {
         return value.obj?.PrimaryMarketName
     })
     marketTrending: string
