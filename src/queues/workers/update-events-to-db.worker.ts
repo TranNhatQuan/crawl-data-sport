@@ -14,12 +14,12 @@ export const updateEventToDBWorker = new Worker(
             .getQueue(QueueName.updateEventToDB)
             .getWaitingCount()
         const { leagueId, events } = job.data
-        return await Container.get(EventService).updateDataFormPriceKineticToDB(
-            {
-                events,
-                leagueId,
-            }
-        )
+        return await Container.get(
+            EventService
+        ).updateDataEventsFromPriceKineticToDB({
+            events,
+            leagueId,
+        })
     },
     {
         connection: new Redis({

@@ -164,16 +164,17 @@ export class CrawlService {
         if (!response || !response.data || !response.data.Success) {
             throw Errors.crawlError
         }
-        const markets = response.data.Event.Markets
-        if (Array.isArray(markets)) {
-            const leagues = plainToInstance(
+        const marketsFromCrawl = response.data.Event.Markets
+        const marketTrending = String(response.data.Event.PrimaryMarketName)
+        if (Array.isArray(marketsFromCrawl)) {
+            const markets = plainToInstance(
                 MarketFromPriceKineticsDTO,
-                markets,
+                marketsFromCrawl,
                 {
                     excludeExtraneousValues: true,
                 }
             )
-            return leagues
+            return { markets, marketTrending }
         } else {
             throw Errors.crawlError
         }

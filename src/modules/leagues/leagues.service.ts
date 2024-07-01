@@ -43,7 +43,7 @@ export class LeagueService {
         return leaguesDB
     }
 
-    async updateDataFormPriceKineticToDB(data: LeagueDataFromCrawlDTO) {
+    async updateDataLeaguesFromPriceKineticToDB(data: LeagueDataFromCrawlDTO) {
         const { leagues, sportId } = data
         if (leagues.length == 0) return sportId + ' = []'
         const sport = await this.sportService.getSport({ sportId })

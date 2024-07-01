@@ -33,7 +33,12 @@ export class EventService {
         return leaguesDB
     }
 
-    async updateDataFormPriceKineticToDB(data: EventDataFromCrawlDTO) {
+    async getListEvent() {
+        const eventsDB = await EventRepos.getListEvents()
+        return eventsDB
+    }
+
+    async updateDataEventsFromPriceKineticToDB(data: EventDataFromCrawlDTO) {
         const { events, leagueId } = data
         if (events.length == 0) return leagueId + ' = []'
         const league = await this.leagueService.getLeague({ leagueId })
@@ -146,7 +151,6 @@ export class EventService {
                 sportId,
             })
         } catch (error) {
-            console.log(error)
             console.log(error + ' of ' + leagueName)
             return
         }

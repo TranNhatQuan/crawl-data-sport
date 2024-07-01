@@ -14,7 +14,9 @@ export const updateLeagueToDBWorker = new Worker(
             .getQueue(QueueName.updateLeagueToDB)
             .getWaitingCount()
         const { sportId, leagues } = job.data
-        return Container.get(LeagueService).updateDataFormPriceKineticToDB({
+        return Container.get(
+            LeagueService
+        ).updateDataLeaguesFromPriceKineticToDB({
             leagues,
             sportId,
         })
