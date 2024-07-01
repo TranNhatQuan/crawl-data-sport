@@ -51,25 +51,41 @@ export const EventRepos = AppDataSource.getRepository(Event).extend({
         const { eventId, finishedAt, startTime, startedAt, title, leagueId } =
             data
         startTransaction(async (manager) => {
-            await manager.insert(Event, {
-                eventId,
-                leagueId,
-                finishedAt,
-                startTime,
-                startedAt,
-                title,
-            })
+            await manager
+                .insert(Event, {
+                    eventId,
+                    leagueId,
+                    finishedAt,
+                    startTime,
+                    startedAt,
+                    title,
+                })
+                .catch((error) => {
+                    if (error.code === 'ER_DUP_ENTRY') {
+                        return this.updateEvent({
+                            eventId,
+                            enabled: true,
+                        })
+                    }
+                    console.log(
+                        `Error adding event: ${eventId}, Error: ${error}`
+                    )
+                    return
+                })
         })
     },
 
     async updateEvent(data: EventUpdateDTO) {
         const { eventId, finishedAt, startedAt, enabled } = data
         startTransaction(async (manager) => {
-            await manager.update(
-                Event,
-                { eventId },
-                { enabled, finishedAt, startedAt }
-            )
+            await manager
+                .update(Event, { eventId }, { enabled, finishedAt, startedAt })
+                .catch((error) => {
+                    console.log(
+                        `Error update event: ${eventId}, Error: ${error}`
+                    )
+                    return
+                })
         })
     },
 })

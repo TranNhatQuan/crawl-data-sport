@@ -62,11 +62,6 @@ export class LeagueService {
                         return LeagueRepos.updateLeague({
                             leagueId: league.leagueId,
                             enabled: true,
-                        }).catch((error) => {
-                            console.log(
-                                `Error update league: ${league.name}, Error: ${error}`
-                            )
-                            return
                         })
                     }
                     leaguesSet.delete(league.name)
@@ -75,11 +70,6 @@ export class LeagueService {
                         return LeagueRepos.updateLeague({
                             leagueId: league.leagueId,
                             enabled: false,
-                        }).catch((error) => {
-                            console.log(
-                                `Error update league: ${league.name}, Error: ${error}`
-                            )
-                            return
                         })
                     }
                 }
@@ -97,11 +87,6 @@ export class LeagueService {
                 return LeagueRepos.addLeague({
                     name: leagueName,
                     sportId,
-                }).catch((error) => {
-                    console.log(
-                        `Error adding league: ${leagueName}, Error: ${error}`
-                    )
-                    return null
                 })
             })
             await Promise.all(promises)
@@ -115,7 +100,8 @@ export class LeagueService {
         try {
             leagues = await this.crawlListLeague(data)
         } catch (error) {
-            console.log(error + ' of' + sportId)
+            console.log(error + ' of ' + sportId)
+            return
         }
         return this.queueManager
             .getQueue(QueueName.updateLeagueToDB)

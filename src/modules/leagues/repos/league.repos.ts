@@ -63,14 +63,24 @@ export const LeagueRepos = AppDataSource.getRepository(League).extend({
     async addLeague(data: LeagueFromPriceKineticsDTO) {
         const { name, sportId } = data
         startTransaction(async (manager) => {
-            await manager.insert(League, { name, sportId })
+            await manager.insert(League, { name, sportId }).catch((error) => {
+                console.log(`Error adding league: ${name}, Error: ${error}`)
+                return
+            })
         })
     },
 
     async updateLeague(data: LeagueUpdateDTO) {
         const { leagueId, enabled } = data
         startTransaction(async (manager) => {
-            await manager.update(League, { leagueId }, { enabled })
+            await manager
+                .update(League, { leagueId }, { enabled })
+                .catch((error) => {
+                    console.log(
+                        `Error update league: ${leagueId}, Error: ${error}`
+                    )
+                    return
+                })
         })
     },
 })

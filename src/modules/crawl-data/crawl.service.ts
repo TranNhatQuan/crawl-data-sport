@@ -131,9 +131,8 @@ export class CrawlService {
             '&days=' +
             days +
             '&league=' +
-            leagueName
+            encodeURIComponent(leagueName)
         const response = await axios.get(url)
-        //console.log(response)
         if (!response || !response.data || !response.data.Success) {
             throw Errors.crawlError
         }

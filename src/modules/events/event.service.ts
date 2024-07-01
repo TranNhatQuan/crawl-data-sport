@@ -67,11 +67,6 @@ export class EventService {
                                 startTime,
                                 startedAt,
                                 title,
-                            }).catch((error) => {
-                                console.log(
-                                    `Error update event: ${event.eventId}, Error: ${error}`
-                                )
-                                return
                             })
                         }
                     }
@@ -110,11 +105,11 @@ export class EventService {
                                     startTime,
                                     startedAt,
                                     title,
-                                }).catch((error) => {
-                                    console.log(
-                                        `Error update event: ${event.eventId}, Error: ${error}`
-                                    )
-                                    return
+                                })
+                            } else {
+                                return EventRepos.updateEvent({
+                                    eventId: event.eventId,
+                                    enabled: false,
                                 })
                             }
                         }
@@ -133,11 +128,6 @@ export class EventService {
                     return EventRepos.updateEvent({
                         eventId,
                         enabled: false,
-                    }).catch((error) => {
-                        console.log(
-                            `Error update league: ${eventId}, Error: ${error}`
-                        )
-                        return null
                     })
                 })
                 await Promise.all(promises)
@@ -156,7 +146,9 @@ export class EventService {
                 sportId,
             })
         } catch (error) {
-            console.log(error + ' of' + leagueName)
+            console.log(error)
+            console.log(error + ' of ' + leagueName)
+            return
         }
         return this.queueManager
             .getQueue(QueueName.updateEventToDB)
