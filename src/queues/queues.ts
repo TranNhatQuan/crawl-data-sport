@@ -80,6 +80,7 @@ export const setupQueues = () => {
 export const setupCronJob = async () => {
     await setupCronJobCrawlListLeague()
     await setupCronJobCrawlListEvent()
+    await setupCronJobCrawlListMarket()
     return
 }
 
@@ -116,6 +117,25 @@ export const setupCronJobCrawlListEvent = async () => {
         {
             repeat: {
                 every: CRON_TIME.crawlListEvent,
+            },
+        }
+    )
+}
+
+export const setupCronJobCrawlListMarket = async () => {
+    const queue = Container.get(QueueManager).getQueue(
+        QueueName.cronJobCrawlDetailEvent
+    )
+    const oldRepeatableJobs = await queue.getRepeatableJobs()
+    for (const job of oldRepeatableJobs) {
+        await queue.removeRepeatableByKey(job.key)
+    }
+    queue.add(
+        QueueName.cronJobCrawlListEventByLeague,
+        {},
+        {
+            repeat: {
+                every: CRON_TIME.crawlDetailEvent,
             },
         }
     )

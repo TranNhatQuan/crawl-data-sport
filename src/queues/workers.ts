@@ -4,6 +4,8 @@ import { crawlListLeagueWorker } from './workers/crawl-list-league.worker'
 import { updateLeagueToDBWorker } from './workers/update-leagues-to-db.worker'
 import { crawlListEventWorker } from './workers/crawl-list-event.worker'
 import { updateEventToDBWorker } from './workers/update-events-to-db.worker'
+import { crawlListMarketWorker } from './workers/crawl-list-market.worker'
+import { updateMarketToDBWorker } from './workers/update-markets-to-db.worker'
 
 @Service()
 export class WorkerManager {
@@ -27,6 +29,8 @@ export const setupWorkers = () => {
         updateLeagueToDBWorker,
         crawlListEventWorker,
         updateEventToDBWorker,
+        crawlListMarketWorker,
+        updateMarketToDBWorker,
     ]
     workers.forEach((worker) => Container.get(WorkerManager).addWorker(worker))
 }

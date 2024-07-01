@@ -7,9 +7,7 @@ import {
     validateSync,
 } from 'class-validator'
 import Container, { Service } from 'typedi'
-import { AwsConfig } from './aws.config'
 import { MySqlDataSourceConfig } from './db.config'
-import { JwtConfig } from './jwt.config'
 import { RedisConfig } from './redis.config'
 
 @Service()
@@ -38,16 +36,8 @@ export class Config {
     @Type(() => RedisConfig)
     redis: RedisConfig
 
-    @ValidateNested()
-    @Type(() => JwtConfig)
-    jwt: JwtConfig
-
     @IsString()
     basicAuthPassword: string
-
-    @ValidateNested()
-    @Type(() => AwsConfig)
-    awsConfig: AwsConfig
 
     @IsString()
     @IsNotEmpty()
@@ -65,9 +55,7 @@ export class Config {
         this.masterDb = this.decodeStringObj(env.MASTER_DB)
         this.slavesDb = this.decodeStringObj(env.SLAVES_DB)
         this.redis = this.decodeStringObj(env.REDIS)
-        this.jwt = this.decodeStringObj(env.JWT)
         this.basicAuthPassword = env.BASIC_AUTH_PASSWORD
-        this.awsConfig = this.decodeStringObj(env.AWS_CREDENTIALS)
         this.sourceCrawl = env.SOURCE_CRAWL
         this.apiKeySourceCrawl = env.API_KEY_SOURCE_CRAWL
     }
