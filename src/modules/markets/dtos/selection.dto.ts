@@ -3,9 +3,6 @@ import { BaseDTO } from '../../../base/base.dto'
 
 export class SelectionDTO extends BaseDTO {
     @Expose()
-    selectionId: number
-
-    @Expose()
     marketId: number
 
     @Expose()

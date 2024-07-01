@@ -1,16 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm'
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 import { AppBaseEntity } from '../../../base/base.entity'
 
 @Entity({ name: 'Selection' })
-@Unique(['name', 'marketId'])
 export class Selection extends AppBaseEntity {
-    @PrimaryGeneratedColumn('increment')
-    selectionId: number
-
-    @Column()
+    @PrimaryColumn()
     marketId: number
 
-    @Column({ length: 255 })
+    @PrimaryColumn()
     name: string
 
     @Column({ length: 255 })
