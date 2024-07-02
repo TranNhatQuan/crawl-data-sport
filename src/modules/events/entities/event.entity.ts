@@ -23,4 +23,7 @@ export class Event extends AppBaseEntity {
 
     @Column({ default: true })
     enabled: boolean
+
+    @Column({ default: null })
+    marketTrending: string
 }

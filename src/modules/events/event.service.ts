@@ -9,6 +9,7 @@ import { EventDataFromCrawlDTO } from './dtos/event-data-from-crawl.dto'
 import { LeagueService } from '../leagues/leagues.service'
 import { LeagueDTO } from '../leagues/dtos/league.dto'
 import { EventFromPriceKineticsDTO } from '../crawl-data/dtos/event-from-price-kinetics.dto'
+import { EventUpdateDTO } from './dtos/event-update.dto'
 
 @Service()
 export class EventService {
@@ -179,6 +180,15 @@ export class EventService {
             })
             await Promise.all(promises)
         }
+        return true
+    }
+
+    async setMarketTrending(data: EventUpdateDTO) {
+        const { eventId, marketTrending } = data
+        await EventRepos.updateEvent({
+            eventId,
+            marketTrending,
+        })
         return true
     }
 }

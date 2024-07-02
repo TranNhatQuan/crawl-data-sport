@@ -10,19 +10,10 @@ export class MarketDTO extends BaseDTO {
     eventId: string
 
     @Expose()
-    marketType: string
-
-    @Expose()
     name: string
 
     @Expose()
-    startTime: Date
-
-    @Expose()
     enabled: boolean
-
-    @Expose()
-    isTrending: boolean
 
     selections: SelectionDTO[]
 }

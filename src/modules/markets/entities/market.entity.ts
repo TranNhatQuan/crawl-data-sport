@@ -11,17 +11,8 @@ export class Market extends AppBaseEntity {
     eventId: string
 
     @Column({ length: 255 })
-    marketType: string
-
-    @Column({ length: 255 })
     name: string
-
-    @Column()
-    startTime: Date
 
     @Column({ default: true })
     enabled: boolean
-
-    @Column({ default: false })
-    isTrending: boolean
 }

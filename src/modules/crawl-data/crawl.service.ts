@@ -49,7 +49,7 @@ export class CrawlService {
         }
     }
 
-    async crawlDetailEventByLeague(data: CrawlDetailEventDTO) {
+    async crawlDetailEvent(data: CrawlDetailEventDTO) {
         const { eventId } = data
         const days = 10
         const url =
@@ -67,8 +67,8 @@ export class CrawlService {
             throw Errors.crawlError
         }
         const marketsFromCrawl = response.data.Event.Markets
-        const marketTrending = String(response.data.Event.PrimaryMarketName)
         if (Array.isArray(marketsFromCrawl)) {
+            const marketTrending = String(response.data.Event.PrimaryMarketName)
             const markets = plainToInstance(
                 MarketFromPriceKineticsDTO,
                 marketsFromCrawl,

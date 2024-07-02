@@ -6,7 +6,9 @@ import {
 } from '../../../database/connection'
 import { MarketGetListByEventDTO } from '../dtos/market-get-list-by-event.dto'
 import { Market } from '../entities/market.entity'
-import { EventDTO } from '../../events/dtos/event.dto'
+import { MarketDTO } from '../dtos/market.dto'
+import { MarketFromPriceKineticsDTO } from '../../crawl-data/dtos/market-from-price-kinetics.dto'
+import { EntityManager } from 'typeorm'
 
 export const MarketRepos = AppDataSource.getRepository(Market).extend({
     async getListMarketsByEventId(
@@ -18,12 +20,18 @@ export const MarketRepos = AppDataSource.getRepository(Market).extend({
             const plan = await manager
                 .createQueryBuilder()
                 .select()
-                .from(Event, 'c')
+                .from(Market, 'c')
                 .where('c.eventId = :eventId', { eventId })
                 .getRawMany()
-            return plainToInstance(EventDTO, plan, {
+            return plainToInstance(MarketDTO, plan, {
                 excludeExtraneousValues: true,
             })
         })
     },
+
+    async addMarket(data: MarketFromPriceKineticsDTO, manager: EntityManager) {
+        const { marketType, name, startTime } = data
+    },
+
+    async updateMarket(data: )
 })

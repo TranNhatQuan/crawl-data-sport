@@ -7,6 +7,7 @@ import { MarketGetListByEventDTO } from './dtos/market-get-list-by-event.dto'
 import { MarketRepos } from './repos/market.repos'
 import { MarketDataFromCrawlDTO } from './dtos/market-data-from-crawl.dto'
 import { EventDTO } from '../events/dtos/event.dto'
+import { MarketFromPriceKineticsDTO } from '../crawl-data/dtos/market-from-price-kinetics.dto'
 
 @Service()
 export class MarketService {
@@ -19,7 +20,7 @@ export class MarketService {
     async crawlListMarket(data: CrawlDetailEventDTO) {
         const { eventId } = data
         const { markets, marketTrending } =
-            await this.crawlService.crawlDetailEventByLeague({
+            await this.crawlService.crawlDetailEvent({
                 eventId,
             })
         return { eventId, markets, marketTrending }
@@ -31,6 +32,43 @@ export class MarketService {
     }
 
     async updateDataMarketsFromPriceKineticToDB(data: MarketDataFromCrawlDTO) {
+        const { eventId, marketTrending, markets } = data
+        if (markets.length == 0) return eventId + ' = []'
+        const marketDB = await this.getListMarketFromEvent({ eventId })
+        const chunkSize = 20
+        if (marketDB.length == 0) {
+            const chunks = []
+            for (let i = 0; i < markets.length; i += chunkSize) {
+                chunks.push(markets.slice(i, i + chunkSize))
+            }
+            for (const chunk of chunks) {
+                const promises = chunk.map(
+                    (market: MarketFromPriceKineticsDTO) => {
+                        //add market
+                    }
+                )
+                await Promise.all(promises)
+            }
+        } else {
+            const marketsDBSet = new Set(marketDB.map((market) => market.name))
+            const chunks = []
+            for (let i = 0; i < markets.length; i += chunkSize) {
+                chunks.push(markets.slice(i, i + chunkSize))
+            }
+            for (const chunk of chunks) {
+                const promises = chunk.map(
+                    (market: MarketFromPriceKineticsDTO) => {
+                        if (marketsDBSet.has(market.name)) {
+                            marketsDBSet.delete(market.name)
+                        } else {
+                            //add market
+                        }
+                    }
+                )
+                await Promise.all(promises)
+            }
+        }
+
         return
     }
 
@@ -55,7 +93,6 @@ export class MarketService {
         for (let i = 0; i < list.length; i += chunkSize) {
             chunks.push(list.slice(i, i + chunkSize))
         }
-
         for (const chunk of chunks) {
             const promises = chunk.map((event: EventDTO) => {
                 return this.addJobUpdateMarket({ eventId: event.eventId })
@@ -64,5 +101,10 @@ export class MarketService {
         }
 
         return true
+    }
+
+    async addMarket(data: MarketFromPriceKineticsDTO) {
+        //add market
+        return data
     }
 }

@@ -76,10 +76,14 @@ export const EventRepos = AppDataSource.getRepository(Event).extend({
     },
 
     async updateEvent(data: EventUpdateDTO) {
-        const { eventId, finishedAt, startedAt, enabled } = data
+        const { eventId, finishedAt, startedAt, enabled, marketTrending } = data
         startTransaction(async (manager) => {
             await manager
-                .update(Event, { eventId }, { enabled, finishedAt, startedAt })
+                .update(
+                    Event,
+                    { eventId },
+                    { enabled, finishedAt, startedAt, marketTrending }
+                )
                 .catch((error) => {
                     console.log(
                         `Error update event: ${eventId}, Error: ${error}`

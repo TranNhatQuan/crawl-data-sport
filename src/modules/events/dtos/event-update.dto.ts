@@ -3,4 +3,5 @@ export interface EventUpdateDTO {
     finishedAt?: Date
     startedAt?: Date
     enabled?: boolean
+    marketTrending?: string
 }
